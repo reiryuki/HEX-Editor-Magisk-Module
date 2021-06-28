@@ -9,7 +9,7 @@
 - Magisk installed
 
 ## Instructions
-- Install this module via Magisk Manager or Recovery
+- Install this module via Magisk Manager only
 - Reboot
 
 ## Optional
