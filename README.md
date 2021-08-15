@@ -2,27 +2,33 @@
 
 ## Descriptions
 - Bypass security restrictions of HEX Editor app, so we don't need to turn our device to Permissive state to access all storages.
-- What's the app? Tap here: https://play.google.com/store/apps/details?id=com.myprog.hexedit. Tap the "About this app" there.
+- What's this app? Tap here: https://play.google.com/store/apps/details?id=com.myprog.hexedit. Tap the "About this app" there.
 
 ## Requirements
 - Android 4.3 until 12
 - Magisk installed
 
-## Instructions
+## Installation Guide
 - Install this module via Magisk Manager only
 - Reboot
 
-## Optional
+## Tested on
+- Android 10 arm64 CrDroid ROM
+- Android 11 arm64 DotOS ROM
+
+## Optionals
 
 ## Troubleshootings
 
 ## Bug Report
 - https://t.me/androidryukimodsdiscussions/2618
 
-## Channels
-- https://t.me/androidryukimods
+## Credits and Contributors
+- Android Ryuki Mods Discussions Team
+- https://t.me/androidryukimodsdiscussions/25188
 
 ## Thanks for Donations
+- https://t.me/androidryukimodsdiscussions/2619
 - https://www.paypal.me/reiryuki
 
 ## Download
