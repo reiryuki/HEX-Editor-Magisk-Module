@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<permissions>
+    <privapp-permissions package="com.myprog.hexedit">
+        <!-- Because this is not declared yet in AndroidManifest.xml -->
+        <permission name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
+    </privapp-permissions>
+</permissions>
+
+
+
