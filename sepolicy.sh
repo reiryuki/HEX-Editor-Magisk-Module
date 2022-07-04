@@ -1,3 +1,7 @@
+# debug
+magiskpolicy --live "dontaudit system_server system_file file write"
+magiskpolicy --live "allow     system_server system_file file write"
+
 # file
 magiskpolicy --live "dontaudit { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } { proc_tty_drivers serialno_prop qemu_hw_prop } file { read open getattr }"
 magiskpolicy --live "allow     { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } { proc_tty_drivers serialno_prop qemu_hw_prop } file { read open getattr }"
@@ -35,8 +39,7 @@ magiskpolicy --live "dontaudit { system_app priv_app platform_app untrusted_app_
 magiskpolicy --live "allow     { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } { apex_mnt_dir configfs debugfs adsprpcd_file system_data_file shell_data_file device } dir read"
 magiskpolicy --live "dontaudit { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } { device sysfs } dir open"
 magiskpolicy --live "allow     { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } { device sysfs } dir open"
-
-
-
+magiskpolicy --live "dontaudit dexoptanalyzer privapp_data_file dir search"
+magiskpolicy --live "allow     dexoptanalyzer privapp_data_file dir search"
 
 

@@ -5,6 +5,16 @@ if [ "$BOOTMODE" != true ]; then
   abort "- Please flash via Magisk Manager only!"
 fi
 
+# magisk
+if [ -d /sbin/.magisk ]; then
+  MAGISKTMP=/sbin/.magisk
+else
+  MAGISKTMP=`find /dev -mindepth 2 -maxdepth 2 -type d -name .magisk`
+fi
+
+# optionals
+OPTIONALS=/sdcard/optionals.prop
+
 # info
 MODVER=`grep_prop version $MODPATH/module.prop`
 MODVERCODE=`grep_prop versionCode $MODPATH/module.prop`
@@ -33,7 +43,7 @@ if [ "$BOOTMODE" != true ]; then
 fi
 FILE=$MODPATH/sepolicy.sh
 DES=$MODPATH/sepolicy.rule
-if [ -f $FILE ] && ! getprop | grep -Eq "sepolicy.sh\]: \[1"; then
+if [ -f $FILE ] && [ "`grep_prop sepolicy.sh $OPTIONALS`" != 1 ]; then
   mv -f $FILE $DES
   sed -i 's/magiskpolicy --live "//g' $DES
   sed -i 's/"//g' $DES
@@ -41,11 +51,6 @@ fi
 
 # cleaning
 ui_print "- Cleaning..."
-APP="`ls $MODPATH/system/priv-app` `ls $MODPATH/system/app`"
-for APPS in $APP; do
-  rm -f `find /data/dalvik-cache /data/resource-cache -type f -name *$APPS*.apk`
-done
-rm -f $MODPATH/LICENSE
 rm -rf /metadata/magisk/$MODID
 rm -rf /mnt/vendor/persist/magisk/$MODID
 rm -rf /persist/magisk/$MODID
@@ -72,13 +77,9 @@ fi\' $MODPATH/post-fs-data.sh
 }
 
 # permissive
-if getprop | grep -Eq "permissive.mode\]: \[1"; then
+if [ "`grep_prop permissive.mode $OPTIONALS`" == 1 ]; then
   ui_print "- Using permissive method"
   rm -f $MODPATH/sepolicy.rule
-  permissive
-  ui_print " "
-elif getprop | grep -Eq "permissive.mode\]: \[2"; then
-  ui_print "- Using both permissive and SE policy patch"
   permissive
   ui_print " "
 fi
@@ -86,7 +87,7 @@ fi
 # function
 extract_lib() {
   for APPS in $APP; do
-    ui_print "- Extracting $APPS.apk libs..."
+    ui_print "- Extracting..."
     FILE=`find $MODPATH/system -type f -name $APPS.apk`
     DIR=`find $MODPATH/system -type d -name $APPS`/lib/$ARCH
     mkdir -p $DIR
@@ -98,17 +99,10 @@ extract_lib() {
 }
 
 # extract
-PROP=`getprop ro.product.cpu.abi`
-DES=lib/$PROP/*
+APP="`ls $MODPATH/system/priv-app` `ls $MODPATH/system/app`"
+DES=lib/`getprop ro.product.cpu.abi`/*
 extract_lib
 chmod 0755 $DIR/*
-
-# magisk
-if [ -d /sbin/.magisk ]; then
-  MAGISKTMP=/sbin/.magisk
-else
-  MAGISKTMP=`find /dev -mindepth 2 -maxdepth 2 -type d -name .magisk`
-fi
 
 # version
 APP=HEXEditor
@@ -142,9 +136,8 @@ if ! pm list package | grep -Eq $PKG; then
 fi
 
 # power save
-PROP=`getprop power.save`
 FILE=$MODPATH/system/etc/sysconfig/*
-if [ "$PROP" == 1 ]; then
+if [ "`grep_prop power.save $OPTIONALS`" == 1 ]; then
   ui_print "- $MODNAME will not be allowed in power save."
   ui_print "  It may save your battery but decreasing $MODNAME performance."
   for PKGS in $PKG; do
