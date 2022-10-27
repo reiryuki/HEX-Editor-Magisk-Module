@@ -8,8 +8,8 @@
 - Android 4.3 and up
 - Magisk installed
 
-## Installation Guide
-- Install this module via Magisk Manager only
+## Installation Guide & Download Link
+- Install this module https://www.pling.com/p/1545144/ via Magisk Manager only
 - Reboot
 
 ## Tested on
@@ -17,20 +17,27 @@
 - Android 11 DotOS ROM
 - Android 12 Ancient OS ROM
 - Android 12.1 Nusantara ROM
+- Android 13 Nusantara ROM
+- Android 13 AOSP ROM
 
-## Bug Report
+## Optionals
+- https://t.me/androidryukimodsdiscussions/60861
+
+## Troubleshootings
+- https://t.me/androidryukimodsdiscussions/29836
+
+## Support & Bug Report
 - https://t.me/androidryukimodsdiscussions/2618
+- If you don't do above, issues will be closed immediately.
 
 ## Credits and Contributors
 - https://t.me/androidryukimodsdiscussions
-- https://t.me/androidappsportdevelopment
+- You can contribute ideas about this Magisk Module here: https://t.me/androidappsportdevelopment
 
 ## Thanks for Donations
-- https://t.me/androidryukimodsdiscussions/2619
-- https://www.paypal.me/reiryuki
+- This Magisk Module is always will be free but you can however show us that you are care by making a donations:
 - https://ko-fi.com/reiryuki
-
-## Download
-- Tap here: https://www.pling.com/p/1545144/
+- https://www.paypal.me/reiryuki
+- https://t.me/androidryukimodsdiscussions/2619
 
 
