@@ -9,16 +9,8 @@
 - Magisk installed
 
 ## Installation Guide & Download Link
-- Install this module https://www.pling.com/p/1545144/ via Magisk Manager only
+- Install this module https://www.pling.com/p/1545144/ via Magisk app only
 - Reboot
-
-## Tested on
-- Android 10 CrDroid ROM
-- Android 11 DotOS ROM
-- Android 12 Ancient OS ROM
-- Android 12.1 Nusantara ROM
-- Android 13 Nusantara ROM
-- Android 13 AOSP ROM
 
 ## Optionals
 - https://t.me/androidryukimodsdiscussions/60861
