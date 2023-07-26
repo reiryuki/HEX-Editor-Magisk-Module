@@ -6,39 +6,16 @@ fi
 # space
 ui_print " "
 
-# magisk
-if [ -d /sbin/.magisk ]; then
-  MAGISKTMP=/sbin/.magisk
-else
-  MAGISKTMP=`realpath /dev/*/.magisk`
+# log
+if [ "$BOOTMODE" != true ]; then
+  FILE=/sdcard/$MODID\_recovery.log
+  ui_print "- Log will be saved at $FILE"
+  exec 2>$FILE
+  ui_print " "
 fi
 
-# path
-if [ "$BOOTMODE" == true ]; then
-  MIRROR=$MAGISKTMP/mirror
-else
-  MIRROR=
-fi
-SYSTEM=`realpath $MIRROR/system`
-PRODUCT=`realpath $MIRROR/product`
-VENDOR=`realpath $MIRROR/vendor`
-SYSTEM_EXT=`realpath $MIRROR/system_ext`
-if [ -d $MIRROR/odm ]; then
-  ODM=`realpath $MIRROR/odm`
-else
-  ODM=`realpath /odm`
-fi
-if [ -d $MIRROR/my_product ]; then
-  MY_PRODUCT=`realpath $MIRROR/my_product`
-else
-  MY_PRODUCT=`realpath /my_product`
-fi
-
-# optionals
-OPTIONALS=/sdcard/optionals.prop
-if [ ! -f $OPTIONALS ]; then
-  touch $OPTIONALS
-fi
+# run
+. $MODPATH/function.sh
 
 # info
 MODVER=`grep_prop version $MODPATH/module.prop`
@@ -46,8 +23,15 @@ MODVERCODE=`grep_prop versionCode $MODPATH/module.prop`
 ui_print " ID=$MODID"
 ui_print " Version=$MODVER"
 ui_print " VersionCode=$MODVERCODE"
-ui_print " MagiskVersion=$MAGISK_VER"
-ui_print " MagiskVersionCode=$MAGISK_VER_CODE"
+if [ "$KSU" == true ]; then
+  ui_print " KSUVersion=$KSU_VER"
+  ui_print " KSUVersionCode=$KSU_VER_CODE"
+  ui_print " KSUKernelVersionCode=$KSU_KERNEL_VER_CODE"
+  sed -i 's|#k||g' $MODPATH/post-fs-data.sh
+else
+  ui_print " MagiskVersion=$MAGISK_VER"
+  ui_print " MagiskVersionCode=$MAGISK_VER_CODE"
+fi
 ui_print " "
 
 # sdk
@@ -61,12 +45,10 @@ else
   ui_print " "
 fi
 
-# mount
-if [ "$BOOTMODE" != true ]; then
-  mount -o rw -t auto /dev/block/bootdevice/by-name/cust /vendor
-  mount -o rw -t auto /dev/block/bootdevice/by-name/vendor /vendor
-  mount -o rw -t auto /dev/block/bootdevice/by-name/persist /persist
-  mount -o rw -t auto /dev/block/bootdevice/by-name/metadata /metadata
+# optionals
+OPTIONALS=/sdcard/optionals.prop
+if [ ! -f $OPTIONALS ]; then
+  touch $OPTIONALS
 fi
 
 # sepolicy
@@ -79,38 +61,33 @@ fi
 
 # cleaning
 ui_print "- Cleaning..."
-rm -rf /metadata/magisk/$MODID
-rm -rf /mnt/vendor/persist/magisk/$MODID
-rm -rf /persist/magisk/$MODID
-rm -rf /data/unencrypted/magisk/$MODID
-rm -rf /cache/magisk/$MODID
+remove_sepolicy_rule
 ui_print " "
 
 # function
 permissive_2() {
-sed -i '1i\
-SELINUX=`getenforce`\
-if [ "$SELINUX" == Enforcing ]; then\
-  magiskpolicy --live "permissive *"\
-fi\' $MODPATH/post-fs-data.sh
+sed -i 's|#2||g' $MODPATH/post-fs-data.sh
 }
 permissive() {
-SELINUX=`getenforce`
-if [ "$SELINUX" == Enforcing ]; then
-  setenforce 0
-  SELINUX=`getenforce`
-  if [ "$SELINUX" == Enforcing ]; then
+FILE=/sys/fs/selinux/enforce
+SELINUX=`cat $FILE`
+if [ "$SELINUX" == 1 ]; then
+  if ! setenforce 0; then
+    echo 0 > $FILE
+  fi
+  SELINUX=`cat $FILE`
+  if [ "$SELINUX" == 1 ]; then
     ui_print "  Your device can't be turned to Permissive state."
     ui_print "  Using Magisk Permissive mode instead."
     permissive_2
   else
-    setenforce 1
-    sed -i '1i\
-SELINUX=`getenforce`\
-if [ "$SELINUX" == Enforcing ]; then\
-  setenforce 0\
-fi\' $MODPATH/post-fs-data.sh
+    if ! setenforce 1; then
+      echo 1 > $FILE
+    fi
+    sed -i 's|#1||g' $MODPATH/post-fs-data.sh
   fi
+else
+  sed -i 's|#1||g' $MODPATH/post-fs-data.sh
 fi
 }
 
@@ -128,49 +105,49 @@ elif [ "`grep_prop permissive.mode $OPTIONALS`" == 2 ]; then
 fi
 
 # /priv-app
-if [ ! -d $SYSTEM/priv-app ]; then
-  ui_print "- /system/priv-app is not supported"
-  ui_print "  Moving to /system/app..."
+if [ "$API" -le 18 ]; then
+  ui_print "- /system/priv-app is not supported in SDK 18 and bellow"
+  ui_print "  Using /system/app instead"
   mv -f $MODPATH/system/priv-app $MODPATH/system/app
   ui_print " "
 fi
 
 # function
 extract_lib() {
-for APPS in $APP; do
-  FILE=`find $MODPATH/system -type f -name $APPS.apk`
+for APP in $APPS; do
+  FILE=`find $MODPATH/system -type f -name $APP.apk`
   if [ -f `dirname $FILE`/extract ]; then
     rm -f `dirname $FILE`/extract
     ui_print "- Extracting..."
-    DIR=`dirname $FILE`/lib/$ARCH
+    DIR=`dirname $FILE`/lib/"$ARCH"
     mkdir -p $DIR
     rm -rf $TMPDIR/*
+    DES=lib/"$ABI"/*
     unzip -d $TMPDIR -o $FILE $DES
     cp -f $TMPDIR/$DES $DIR
+    chmod 0755 $DIR/*
     ui_print " "
   fi
 done
 }
 
 # extract
-APP="`ls $MODPATH/system/priv-app` `ls $MODPATH/system/app`"
-DES=lib/`getprop ro.product.cpu.abi`/*
+APPS="`ls $MODPATH/system/priv-app` `ls $MODPATH/system/app`"
 extract_lib
-chmod 0755 $DIR/*
 
 # version
 APP=HEXEditor
 PKG=com.myprog.hexedit
-CURRENT=`pm list packages --show-versioncode | grep $PKG | sed "s/package:$PKG versionCode://"`
+CURRENT=`pm list packages --show-versioncode | grep $PKG | sed "s|package:$PKG versionCode:||g"`
 NEW=120
-DIR=`find /data/adb/modules/"$MODID" -type d -name "$APP"`
+DIR=`find /data/adb/modules/"$MODID"/system -type d -name "$APP"`
 ui_print "- Current app versionCode: $CURRENT"
 ui_print "  New app versionCode: $NEW"
 if [ "$CURRENT" == "$NEW" ]; then
-  if [ -d $DIR/oat ]; then
+  if [ -f $DIR/oat/$APP.odex ]; then
     ui_print "  Copying oat..."
     cp -rf $DIR/oat $MODPATH/$DIR
-  elif [ -d $DIR/odex ]; then
+  elif [ -f $DIR/odex/$APP.odex ]; then
     ui_print "  Copying odex..."
     cp -rf $DIR/odex $MODPATH/$DIR
   elif [ -f $DIR/$APP.odex ]; then
@@ -181,28 +158,19 @@ fi
 ui_print " "
 
 # power save
+PKGS=`cat $MODPATH/package.txt`
 FILE=$MODPATH/system/etc/sysconfig/*
 if [ "`grep_prop power.save $OPTIONALS`" == 1 ]; then
   ui_print "- $MODNAME will not be allowed in power save."
   ui_print "  It may save your battery but decreasing $MODNAME performance."
-  for PKGS in $PKG; do
-    sed -i "s/<allow-in-power-save package=\"$PKGS\"\/>//g" $FILE
-    sed -i "s/<allow-in-power-save package=\"$PKGS\" \/>//g" $FILE
+  for PKG in $PKGS; do
+    sed -i "s|<allow-in-power-save package=\"$PKG\"/>||g" $FILE
+    sed -i "s|<allow-in-power-save package=\"$PKG\" />||g" $FILE
   done
   ui_print " "
 fi
 
-# function
-hide_oat() {
-for APPS in $APP; do
-  mkdir -p `find $MODPATH/system -type d -name $APPS`/oat
-  touch `find $MODPATH/system -type d -name $APPS`/oat/.replace
-done
-}
 
-# hide
-APP="`ls $MODPATH/system/priv-app` `ls $MODPATH/system/app`"
-hide_oat
 
 
 
