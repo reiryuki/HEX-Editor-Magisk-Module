@@ -3,4 +3,3 @@
     <hidden-api-whitelisted-app package="com.myprog.hexedit"/>
     <allow-in-power-save package="com.myprog.hexedit"/>
 </config>
-
