@@ -1,8 +1,3 @@
-# boot mode
-if [ "$BOOTMODE" != true ]; then
-  abort "- Please flash via Magisk app only!"
-fi
-
 # space
 ui_print " "
 
@@ -11,6 +6,19 @@ if [ "$BOOTMODE" != true ]; then
   FILE=/sdcard/$MODID\_recovery.log
   ui_print "- Log will be saved at $FILE"
   exec 2>$FILE
+  ui_print " "
+fi
+
+# optionals
+OPTIONALS=/sdcard/optionals.prop
+if [ ! -f $OPTIONALS ]; then
+  touch $OPTIONALS
+fi
+
+# debug
+if [ "`grep_prop debug.log $OPTIONALS`" == 1 ]; then
+  ui_print "- The install log will contain detailed information"
+  set -x
   ui_print " "
 fi
 
@@ -43,12 +51,6 @@ if [ "$API" -lt $NUM ]; then
 else
   ui_print "- SDK $API"
   ui_print " "
-fi
-
-# optionals
-OPTIONALS=/sdcard/optionals.prop
-if [ ! -f $OPTIONALS ]; then
-  touch $OPTIONALS
 fi
 
 # sepolicy
@@ -135,11 +137,8 @@ done
 APPS="`ls $MODPATH/system/priv-app` `ls $MODPATH/system/app`"
 extract_lib
 
-# version
-APP=HEXEditor
-PKG=com.myprog.hexedit
-CURRENT=`pm list packages --show-versioncode | grep $PKG | sed "s|package:$PKG versionCode:||g"`
-NEW=120
+# function
+copy_odex() {
 DIR=`find /data/adb/modules/"$MODID"/system -type d -name "$APP"`
 ui_print "- Current app versionCode: $CURRENT"
 ui_print "  New app versionCode: $NEW"
@@ -156,6 +155,16 @@ if [ "$CURRENT" == "$NEW" ]; then
   fi
 fi
 ui_print " "
+}
+
+# install
+APP=HEXEditor
+PKG=com.myprog.hexedit
+NEW=120
+if [ "$BOOTMODE" == true ]; then
+  CURRENT=`pm list packages --show-versioncode | grep $PKG | sed "s|package:$PKG versionCode:||g"`
+  copy_odex
+fi
 
 # power save
 PKGS=`cat $MODPATH/package.txt`
