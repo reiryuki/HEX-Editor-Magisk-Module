@@ -1,16 +1,19 @@
 # space
 ui_print " "
 
+# var
+UID=`id -u`
+
 # log
 if [ "$BOOTMODE" != true ]; then
-  FILE=/sdcard/$MODID\_recovery.log
+  FILE=/data/media/"$UID"/$MODID\_recovery.log
   ui_print "- Log will be saved at $FILE"
   exec 2>$FILE
   ui_print " "
 fi
 
 # optionals
-OPTIONALS=/sdcard/optionals.prop
+OPTIONALS=/data/media/"$UID"/optionals.prop
 if [ ! -f $OPTIONALS ]; then
   touch $OPTIONALS
 fi
@@ -45,8 +48,9 @@ ui_print " "
 # sdk
 NUM=18
 if [ "$API" -lt $NUM ]; then
-  ui_print "! Unsupported SDK $API. You have to upgrade your"
-  ui_print "  Android version at least SDK API $NUM to use this module."
+  ui_print "! Unsupported SDK $API."
+  ui_print "  You have to upgrade your Android version"
+  ui_print "  at least SDK API $NUM to use this module."
   abort
 else
   ui_print "- SDK $API"
