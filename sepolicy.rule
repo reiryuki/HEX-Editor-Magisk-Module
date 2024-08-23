@@ -9,7 +9,8 @@ allow init { system_file system_lib_file vendor_file vendor_configs_file } { dir
 # file
 allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } { proc_tty_drivers serialno_prop qemu_hw_prop vendor_file hal_perf_default_exec hal_power_default_exec } file { read open }
 allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } * file getattr
-allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } qemu_sf_lcd_density_prop file read
+allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } qemu_sf_lcd_density_prop file { read open map }
+allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } { dirac_prop qemu_hw_prop serialno_prop } file map
 allow system_server system_file file ioctl
 
 # fifo_file
@@ -19,14 +20,14 @@ allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untru
 allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } { mnt_vendor_file init_exec } lnk_file read
 
 # chr_file
-allow  { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } * chr_file getattr
+allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } * chr_file getattr
 
 # dir
 allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } * dir getattr
 allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } { cgroup rootfs } dir { read open }
 allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } { apex_mnt_dir configfs debugfs adsprpcd_file system_data_file shell_data_file device } dir read
 allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } { device sysfs } dir open
-allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } { mnt_vendor_file shell_test_data_file } dir search
+allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } { mnt_vendor_file shell_test_data_file block_device system_bootstrap_lib_file } dir search
 allow dexoptanalyzer privapp_data_file dir search
 
 # filesystem
