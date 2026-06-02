@@ -2,7 +2,6 @@
 allow system_server system_file file write
 
 # context
-create { system_lib_file vendor_file vendor_configs_file }
 allow { system_file system_lib_file vendor_file vendor_configs_file } labeledfs filesystem associate
 allow init { system_file system_lib_file vendor_file vendor_configs_file } { dir file } relabelfrom
 
@@ -24,16 +23,17 @@ allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untru
 
 # dir
 allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } * dir getattr
-allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } { cgroup rootfs } dir { read open }
-allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } { apex_mnt_dir configfs debugfs adsprpcd_file system_data_file shell_data_file device } dir read
-allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } { device sysfs } dir open
-allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } { mnt_vendor_file shell_test_data_file block_device system_bootstrap_lib_file } dir search
+allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } { cgroup rootfs device apex_mnt_dir configfs adsprpcd_file } dir { read open }
+allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } { debugfs system_data_file shell_data_file } dir read
+allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } sysfs dir open
+allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } { mnt_vendor_file shell_test_data_file block_device system_bootstrap_lib_file vendor_aconfig_storage_file configfs } dir search
 allow dexoptanalyzer privapp_data_file dir search
 
 # filesystem
 allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } firmware_file filesystem getattr
 
-
+# blk_file
+allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } system_block_device blk_file getattr
 
 
 

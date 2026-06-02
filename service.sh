@@ -59,7 +59,7 @@ if appops get $PKG > /dev/null 2>&1; then
     appops set $PKG READ_MEDIA_VISUAL_USER_SELECTED allow
   fi
   appops set $PKG SYSTEM_ALERT_WINDOW allow
-  UID=`dumpsys package $PKG 2>/dev/null | grep -m 1 Id= | sed -e 's|    userId=||g' -e 's|    appId=||g'`
+  UID=`grep -w $PKG /data/system/packages.list | awk '{print $2}'`
   if [ "$UID" ] && [ "$UID" -gt 9999 ]; then
     appops set --uid "$UID" LEGACY_STORAGE allow
     appops set --uid "$UID" READ_EXTERNAL_STORAGE allow
@@ -70,13 +70,6 @@ if appops get $PKG > /dev/null 2>&1; then
     if [ "$API" -ge 34 ]; then
       appops set --uid "$UID" READ_MEDIA_VISUAL_USER_SELECTED allow
     fi
-  fi
-  APP=HEXEditor
-  NAME=android.permission.WRITE_EXTERNAL_STORAGE
-  if ! dumpsys package $PKG | grep "$NAME: granted=true"; then
-    FILE=`find $MODPATH/system -type f -name $APP.apk`
-    pm install -g -i com.android.vending $FILE
-    pm uninstall -k $PKG
   fi
   PKGOPS=`appops get $PKG`
   if [ "$UID" ] && [ "$UID" -gt 9999 ]; then
