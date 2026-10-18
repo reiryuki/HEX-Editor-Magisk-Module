@@ -17,7 +17,7 @@ v1.16
 - Move _uninstall.log to /data/adb/logs/
 
 v1.15
-- Update libmagiskpolicy.so from Magisk (debug) 30.7 (30700)
+- Update libmagiskpolicy.so from Magisk (stable) 30.7 (30700)
 - Fix sepolicy denials
 
 v1.14
