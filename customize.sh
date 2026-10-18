@@ -135,7 +135,6 @@ for APP in $APPS; do
     DES=lib/"$ABILIB"/*
     unzip -d $TMPDIR -o $FILE $DES
     cp -f $TMPDIR/$DES $DIR
-    chmod 0755 $DIR/*
     ui_print " "
   fi
 done
@@ -200,7 +199,16 @@ if [ "`grep_prop power.save $OPTIONALS`" == 1 ]; then
   ui_print " "
 fi
 
-
+# prepare
+PKG=com.myprog.hexedit
+DIR=/storage/emulated/"$UID"/Android/data/$PKG/files
+DIR2=/storage/emulated/"$UID"/Android/data/$PKG/cache
+ui_print "- Creating directories:"
+ui_print "  $DIR"
+mkdir -p $DIR
+ui_print "  $DIR2"
+mkdir -p $DIR2
+ui_print " "
 
 
 

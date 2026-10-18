@@ -10,8 +10,14 @@
 
 ## Changelog
 
+v1.16
+- Update libmagiskpolicy.so from Magisk (debug) 31.0 (31000)
+- Prepare /storage/emulated/"$UID"/Android/data/$PKG/ directories
+- Resets module folders/files permissions at post-fs-data
+- Move _uninstall.log to /data/adb/logs/
+
 v1.15
-- Update libmagiskpolicy.so from Magisk (stable) 30.7 (30700)
+- Update libmagiskpolicy.so from Magisk (debug) 30.7 (30700)
 - Fix sepolicy denials
 
 v1.14
@@ -58,8 +64,8 @@ v1.7
 - Mount /persist and /metadata on recovery to fix sepolicy.rule installation on recovery
 
 ## Installation Guide & Download Link
-- If you are using KernelSU, you need to disable Unmount Modules by Default in KernelSU app settings and install https://github.com/KernelSU-Modules-Repo/meta-overlayfs or https://github.com/KernelSU-Modules-Repo/magic_mount_rs or https://github.com/KernelSU-Modules-Repo/hybrid_mount first depending on ROM compatibility
-- Install this module https://bicolink.com/UdCqjiZ via Magisk/KernelSU/Apatch/Kitsune Mask app or Recovery if Magisk or Kitsune Mask installed
+- If you are using KernelSU, you need to disable Unmount Modules by Default in KernelSU app settings and install https://github.com/KernelSU-Modules-Repo/meta-overlayfs or https://github.com/KernelSU-Modules-Repo/magic_mount_rs or https://github.com/KernelSU-Modules-Repo/hybrid_mount or https://github.com/maxsteeel/nomount first depending on ROM compatibility
+- Install this module https://github.com/reiryuki/HEX-Editor-Magisk-Module via Magisk/KernelSU/Apatch/Kitsune Mask app or Recovery if Magisk or Kitsune Mask installed
 - Reboot
 - If you are using KernelSU, you need to allow superuser list manually all package name listed in package.txt (and your home launcher app also) (enable show system apps) and reboot afterwards
 - If you are using SUList, you need to allow list manually your home launcher app (enable show system apps) and reboot afterwards
@@ -79,7 +85,7 @@ Global: https://t.me/ryukinotes/34
 
 ## Credits and Contributors
 - https://t.me/androidryukimodsdiscussions
-- You can contribute ideas about this Magisk Module here: https://t.me/androidappsportdevelopment
+- https://t.me/androidappsportdevelopment
 
 ## Sponsors
 https://t.me/ryukinotes/25
